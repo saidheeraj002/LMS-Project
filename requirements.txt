@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic[email]
+python-jose[cryptography]
+passlib
+python-dotenv
+pydantic-settings
+python-multipart
+asyncmy
+mysqlclient
+bcrypt
+google-cloud-aiplatform~=1.63.0
