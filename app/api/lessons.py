@@ -44,6 +44,18 @@ async def upload_lessons_bulk(lesson_details: lessons_schema.LessonBulkCreate, l
 #         return e
 
 
+@router.get("/lesson_data/{subject_id}")
+async def get_lessons_list(subject_id: int, lesson_service: LessonService = Depends(), current_user: models.User = Depends(get_current_user)):
+    try:
+        """
+        Retrieve all the Lessons Data based on the Subject ID.
+        """
+        return await lesson_service.get_lessons_by_subject_id(subject_id)
+    except Exception as e:
+        return e
+
+
+
 @router.get("/lessons_list/")
 async def get_lessons_list(lesson_service: LessonService = Depends(), current_user: models.User = Depends(get_current_user)):
     try:

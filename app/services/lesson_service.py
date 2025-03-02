@@ -26,6 +26,11 @@ class LessonService:
         lessons_list = result.scalars().all()
         return lessons_list
 
+    async def get_lessons_by_subject_id(self, subject_id):
+        result = await self.db.execute(select(models.Lesson).filter(models.Lesson.subject_id == subject_id))
+        lessons_list = result.scalars().all()
+        return lessons_list
+
     async def get_lesson_details(self, request_details):
         try:
             result = await self.db.execute(select(models.Lesson).with_only_columns(models.Lesson.lesson_pdf_link).filter(
