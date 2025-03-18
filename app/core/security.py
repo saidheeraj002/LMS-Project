@@ -1,4 +1,4 @@
-from jose import JWTError, jwt
+from jose import JWTError, jwt, ExpiredSignatureError
 from datetime import datetime, timedelta
 from app.core.config import settings
 from passlib.context import CryptContext
@@ -27,6 +27,6 @@ def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload
-    except JWTError as e:
+    except ExpiredSignatureError as e:
         print(e)
-        return None
+        return e.args[0]

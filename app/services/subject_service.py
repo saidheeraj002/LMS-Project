@@ -24,3 +24,13 @@ class SubjectService:
     async def get_subjects_list(self):
         result = await self.db.execute(select(models.Subject))
         return result.scalars().all()
+
+    async def get_class_subjects_list(self, grade):
+        result = await self.db.execute(select(models.Subject).filter(models.Subject.grade == grade))
+        subjects_list = result.scalars().all()
+        return subjects_list
+
+    async def get_class_subjects_id(self, grade, subject_name):
+        result = await self.db.execute(select(models.Subject).filter(models.Subject.grade == grade, models.Subject.title == subject_name))
+        subjects_list = result.scalars().all()
+        return subjects_list

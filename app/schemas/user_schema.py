@@ -8,6 +8,10 @@ class UserBase(BaseModel):
     # grade: Optional[str]
     role: Optional[str] = "student"
 
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
 class UserCreate(UserBase):
     is_active: bool
     password: str

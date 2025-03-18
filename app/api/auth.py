@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from datetime import timedelta
@@ -11,7 +11,6 @@ from app.core import security
 from app.core.config import settings
 from typing import List
 from app.models import models
-from app.schemas import user_schema
 from jose import JWTError
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
@@ -45,13 +44,14 @@ router = APIRouter()
 
 # @router.post("/login", response_model=generic_schemas.Message)
 @router.post("/login")
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+# async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login_for_access_token(user_login: user_schemas.UserLogin = Body(), db: Session = Depends(get_db)):
     try:
         # db_user = await db.query(models.User).filter(models.User.username == form_data.username).first()
         result = await db.execute(
-            sqlalchemy.select(models.User).filter(models.User.username == form_data.username))
+            sqlalchemy.select(models.User).filter(models.User.email == user_login.email))
         db_user = result.scalar_one_or_none()
-        if not db_user or not security.verify_password(form_data.password, db_user.hashed_password):
+        if not db_user or not security.verify_password(user_login.password, db_user.hashed_password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
@@ -69,23 +69,33 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+    # credentials_exception = HTTPException(
+    #     status_code=status.HTTP_401_UNAUTHORIZED,
+    #     detail="Could not validate credentials",
+    #     headers={"WWW-Authenticate": "Bearer"},
+    # )
     try:
         payload = security.decode_access_token(token)
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
+        if type(payload) is str and payload == "Signature has expired.":
+            return {"status_code": 401, "response": "Token has Expired"}
+        else:
+            username: str = payload.get("sub")
+    except JWTError as e:
+        return {"status_code": 401, "response": "Invalid Token"}
 
-    result = await db.execute(sqlalchemy.select(models.User).where(models.User.username == username))
-    user = result.scalars().first()
+    result = await db.execute(sqlalchemy.select(models.User.username, models.User.email).filter(
+        models.User.username == username))
+
+    result = await db.execute(
+        sqlalchemy.select(models.User.username, models.User.grade).filter(models.User.username == username)
+    )
+
+    # result = await db.execute(sqlalchemy.select(models.User).where(models.User.username == username))
+    user = result.fetchone()
+    if user:
+        user = dict(user._mapping)
     if user is None:
-        raise credentials_exception
+        return {"status_code": 401, "response": "User not found"}
     return user
 
 

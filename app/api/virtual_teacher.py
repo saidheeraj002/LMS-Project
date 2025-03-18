@@ -3,6 +3,7 @@ from app.schemas import virtual_teacher_schema
 from app.models import models
 from app.api.auth import get_current_user
 from app.ai.docs_ingestion import DocsProcessing
+from app.ai.gemini_calling import GeminiCalling
 
 router = APIRouter()
 
@@ -16,3 +17,15 @@ async def virtual_assistance(request_body: virtual_teacher_schema.AskVirtualTeac
         return {"answer": result}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+
+
+
+
+
+
+
+
+
+

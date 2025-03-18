@@ -10,7 +10,8 @@ from fastapi import Depends
 class DocsProcessing:
     def __init__(self, lesson_service: LessonService = Depends()):
         self.vertex_init = vertexai.init(project="genai-432214", location="us-central1")
-        self.model_name = GenerativeModel("gemini-2.0-pro-exp-02-05")
+        # self.model_name = GenerativeModel("gemini-2.0-pro-exp-02-05")
+        self.model_name = GenerativeModel("gemini-2.0-flash-001")
         self.gcred = os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "D:\projects\LMS-Project\\application_default_credentials.json"
         # self.virtual_teacher_service = VirtualTeacherService()
         self.lesson_service = lesson_service
