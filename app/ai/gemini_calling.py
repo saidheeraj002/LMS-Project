@@ -18,8 +18,7 @@ class GeminiCalling:
         # self.model_name = GenerativeModel("gemini-2.0-pro-exp-02-05")
         # self.model_name = GenerativeModel("gemini-2.0-flash-001")
         self.model_langchain  =  ChatVertexAI(model="gemini-2.0-flash-001", temperature=0, max_retries=2)
-        self.model_gemini = GenerativeModel("gemini-2.0-flash-001")
-        self.gcred = os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "D:\projects\LMS-Project\\application_default_credentials.json"
+        self.gcred = os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "*******************"
         self.chat_service = chat_service
         self.subject_service = subject_service
         self.lesson_service = lesson_service
