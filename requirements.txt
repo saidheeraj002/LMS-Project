@@ -14,3 +14,4 @@ google-cloud-aiplatform~=1.63.0
 langchain
 langchain_community
 langchain-google-vertexai
+pinecone
