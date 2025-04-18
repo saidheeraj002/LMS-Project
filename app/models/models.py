@@ -56,3 +56,12 @@ class ChatConversations(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 
+class ChatWindows(Base):
+    __tablename__ = "chat_windows"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    window_id = Column(String, index=True, nullable=False)
+    username = Column(String, index=True, nullable=False)
+    subject = Column(String, index=True, nullable=False)
+    topic = Column(String, index=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

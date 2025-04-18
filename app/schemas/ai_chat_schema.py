@@ -1,3 +1,5 @@
+from pydoc import describe
+
 from pydantic import BaseModel, Field
 
 class AIChatCreate(BaseModel):
@@ -9,3 +11,8 @@ class AIChatCreate(BaseModel):
 class AIChatRequest(BaseModel):
     window_id: str = Field(..., description="Chat Window ID")
     user_query: str = Field(..., description="User Query")
+
+class AIChatDetails(BaseModel):
+    subject: str = Field(..., description="Selected Subject")
+    topic: str = Field(..., description="Selected Topic")
+
